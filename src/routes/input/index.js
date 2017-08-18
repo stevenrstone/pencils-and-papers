@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import style from './style';
+import firebase from '../../components/firebase';
 
 export default class Input extends Component {
 	handleSubmit = (event) => {
@@ -7,6 +8,13 @@ export default class Input extends Component {
 		if (this.state.text !== '') {
 			let newStateArray = this.state.entries.slice();
 			newStateArray.push(this.state.text);
+
+			const itemsRef = firebase.database().ref('items');
+			const item = {
+				text: this.state.text
+			};
+			itemsRef.push(item);
+
 			this.setState({ entries: newStateArray });
 			this.setState({ text: '' });
 		}
@@ -14,20 +22,13 @@ export default class Input extends Component {
 
 	handleTextChange = (event) => {
 		this.setState({ text: event.target.value });
-
-		// const doc = new this.state.doc({ a: 5, now: new Date(), test: 'this is a string' });
-		// doc.b = 13;
-		// doc.save((err) => {
-		// 	alert(doc._id);
-		// });
 	};
 
 	constructor(props) {
 		super(props);
 		this.state = {
 			entries: [],
-			text: '',
-			linvo: this.props.linvo
+			text: ''
 		};
 
 		this.handleSubmit = this.handleSubmit.bind(this);

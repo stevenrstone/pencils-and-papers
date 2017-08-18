@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 import { Router } from 'preact-router';
 
 import Nav from './nav';
-import Home from '../routes/home';
+// import Home from '../routes/home';
 // import Profile from '../routes/profile';
 import Test from '../routes/test';
 import Input from '../routes/input';
@@ -18,23 +18,6 @@ export default class App extends Component {
 	handleRoute = e => {
 		this.currentUrl = e.url;
 	};
-
-	componentDidMount() {
-		const script = document.createElement('script');
-		script.src = 'https://www.gstatic.com/firebasejs/4.3.0/firebase.js';
-		document.body.appendChild(script);
-
-		const config = {
-			apiKey: 'AIzaSyDJkXbi8-lcf0Vbi26G9IxIDS6MGjXXft0',
-			authDomain: 'notebook-a0d26.firebaseapp.com',
-			databaseURL: 'https://notebook-a0d26.firebaseio.com',
-			projectId: 'notebook-a0d26',
-			storageBucket: '',
-			messagingSenderId: '924537163366'
-		};
-		//firebase should be defined in the above script tag
-		firebase.initializeApp(config);
-	}
 
 	render() {
 		return (
