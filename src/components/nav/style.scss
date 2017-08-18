@@ -1,0 +1,42 @@
+.nav {
+  background-color: white;
+  border-right: 1px solid lightskyblue;
+  box-shadow: 5px 0 5px rgba(135, 206, 250, .1);
+  height: 100vh;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100px;
+
+  & + * {
+    margin-left: 100px;
+  }
+}
+
+.nav__icon {
+  background: white;
+  display: block;
+  height: 100px;
+  width: 100%;
+
+  svg {
+    fill: darkgray;
+    height: 100%;
+    padding: 1rem;
+    width: 100%;
+  }
+
+  &.active {
+    background: lightskyblue;
+
+    svg {
+      fill: white;
+    }
+  }
+}
+
+.nav__icon--bottom {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+}
