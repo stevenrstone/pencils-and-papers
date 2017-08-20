@@ -8,6 +8,45 @@ body {
   box-sizing: border-box;
 }
 
+.modal-content {
+  background: white;
+  border: 1px solid lightskyblue;
+  box-shadow: 4px 4px 5px lightskyblue;
+  padding: 3rem;
+}
+
+.hidden-submit {
+  height: 0;
+  visibility: hidden;
+  width: 0;
+}
+
+.buttons-container {
+  clear: both;
+  float: right;
+}
+
+.button--cancel {
+  background-color: #e1e1e1;
+  border: 2px solid #363636;
+  color: #363636;
+  float: right;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 1em;
+}
+
+.button--confirm {
+  background-color: lightskyblue;
+  border: 2px solid #363636;
+  color: #363636;
+  float: right;
+  font-size: 18px;
+  font-weight: bold;
+  margin-left: 2em;
+  padding: 1em;
+}
+
 
 // Colors
 $black: #000;

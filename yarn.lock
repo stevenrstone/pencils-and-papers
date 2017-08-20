@@ -4581,6 +4581,10 @@ mem@^1.1.0:
   dependencies:
     mimic-fn "^1.0.0"
 
+memobind@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/memobind/-/memobind-0.5.0.tgz#3013125b4adaa85054679685a1720871c6c31c4b"
+
 memory-fs@^0.4.0, memory-fs@~0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/memory-fs/-/memory-fs-0.4.1.tgz#3a9a20b8462523e447cfbc7e8bb80ed667bfc552"
