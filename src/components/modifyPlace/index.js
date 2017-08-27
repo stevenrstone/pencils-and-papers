@@ -12,25 +12,38 @@ export default class Input extends Component {
 
 	handleSubmit = (event) => {
 		event.preventDefault();
+		if (this.props.place === undefined) {
+			const newPlace = {
+				name: this.state.name,
+				location: this.state.location,
+				description: this.state.description,
+				pointsOfInterest: this.state.pointsOfInterest
+			};
+			// double check how to add new entry to firebase db
+			const placeRef = firebase.database().ref(`/${this.props.charName}/notes/${newPlace.name}`);
 
-		const item = this.state.entry;
-		const nameRef = firebase.database().ref(`/${this.props.charName}/notes/${item.id}/`);
-		nameRef.child('text').set(this.state.newText)
-			.then(this.closeModal);
+		}
+
+		// const item = this.state.entry;
+		// const nameRef = firebase.database().ref(`/${this.props.charName}/notes/${item.id}/`);
+		// nameRef.child('text').set(this.state.newText)
+		// 	.then(this.closeModal);
 	}
 
 	handleTextChange = (event) => {
 		const value = event.target.value.replace(/[\r\n\v]+/g, '');
 		event.target.value = value;
 		
-		this.setState({ newText: event.target.value });
+		this.setState({ [event.target.name]: event.target.value });
 	};
 
 	constructor(props) {
 		super(props);
 		this.state = {
-			entry: this.props.entry,
-			newText: this.props.entry.text
+			name: this.state.name,
+			location: this.state.location,
+			description: this.state.description,
+			pointsOfInterest: this.state.pointsOfInterest
 		};
 
 		this.closeModal = this.closeModal.bind(this);

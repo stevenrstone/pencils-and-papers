@@ -13,7 +13,7 @@ export default class Header extends Component {
 		return (
 			<nav class={style.nav}>
 				<span class={style.name}>{this.props.charName}</span>
-				<Link class={style.nav__icon} activeClassName={style.active} href="/input/">
+				<Link class={style.nav__icon} activeClassName={style.active} href="/notes/">
 					{/* SVG Pencil */}
 					<svg
 						version="1.1"
@@ -68,7 +68,7 @@ export default class Header extends Component {
 						</g>
 					</svg>
 				</Link>
-				<Link class={style.nav__icon + ' ' + style['nav__icon--bottom']} activeClassName={style.active} href="/test/">
+				<Link class={style.nav__icon + ' ' + style['nav__icon--bottom']} activeClassName={style.active} href="/config/">
 					<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
 						width="932.179px" height="932.179px" viewBox="0 0 932.179 932.179" style="enable-background:new 0 0 932.179 932.179;"
 					>

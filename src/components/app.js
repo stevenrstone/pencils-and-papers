@@ -3,11 +3,15 @@ import { Router, route } from 'preact-router';
 
 import Nav from './nav';
 import Home from '../routes/home';
-// import Profile from '../routes/profile';
-import Test from '../routes/test';
-import Input from '../routes/input';
-// import Home from 'async!./home';
-// import Profile from 'async!./profile';
+import Notes from '../routes/notes';
+import Places from '../routes/places';
+import People from '../routes/people';
+import Things from '../routes/things';
+import Config from '../routes/config';
+
+
+import Modal from './modal';
+import Login from './login';
 
 export default class App extends Component {
 
@@ -19,19 +23,13 @@ export default class App extends Component {
 		this.currentUrl = e.url;
 	};
 
-	setCharName = (name, path) => {
+	setCharName = (name) => {
 		this.setState({
 			charName: name
 		});
 
 		document.cookie = `nbCharName=${this.state.charName}`;
-
-		if (path !== '/') {
-			route(path);
-		}
-		else {
-			route('/input/');
-		}
+		route('/notes/');
 	}
 
 	constructor(props) {
@@ -45,28 +43,38 @@ export default class App extends Component {
 
 	componentDidMount() {
 		const cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)nbCharName\s*=\s*([^;]*).*$)|^.*$/,'$1');
-
-		console.log(cookieValue);
 		if (cookieValue !== '') {
 			this.setCharName(cookieValue, window.location.pathname);
 		}
 		else {
-			console.log('routing home');
 			route('/');
 		}
 	}
 
+	renderApp = () => (
+		<div id="app">
+			<Nav charName={this.state.charName} />
+			<Router onChange={this.handleRoute}>
+				<Home path="/" setCharName={this.setCharName} />
+				<Notes path="/notes" charName={this.state.charName} />
+				<Places path="/places" charName={this.state.charName} />
+				<People path="/people" charName={this.state.charName} />
+				<Things path="/things" charName={this.state.charName} />
+				<Config path="/config" charName={this.state.charName} />
+			</Router>
+		</div>
+	)
+
+	renderLogin = () => (
+		<Modal>
+			<Login setCharName={this.setCharName} />
+		</Modal>
+	)
+
 	render() {
-		return (
-			<div id="app">
-				<Nav charName={this.state.charName} />
-				<Router onChange={this.handleRoute}>
-					<Home path="/" setCharName={this.setCharName} />
-					<Test path="/test/" />
-					<Input path="/input" setCharName={this.setCharName} charName={this.state.charName} />
-				</Router>
-				
-			</div>
-		);
+		if (this.state.charName === '') {
+			return this.renderLogin();
+		}
+		return this.renderApp();
 	}
 }

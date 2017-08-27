@@ -10,7 +10,7 @@ export default class Login extends Component  {
 
 	handleSubmit = (event) => {
 		event.preventDefault();
-		this.props.setCharName(this.state.charName, this.props.path);
+		this.props.setCharName(this.state.charName);
 	}
 
 	constructor(props) {

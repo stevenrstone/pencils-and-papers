@@ -7,13 +7,14 @@ export default class Home extends Component {
 // const Home = () => (
 	constructor(props) {
 		super(props);
+		this.state = {};
 	}
 
 	render() {
 		return (
-		<Modal>
-			<Login setCharName={this.props.setCharName} {...this.props} />
-		</Modal>
+			<Modal>
+				<Login setCharName={this.props.setCharName} {...this.props} />
+			</Modal>
 		);
 	}
 }
