@@ -13,15 +13,15 @@ export default class Input extends Component {
 	handleSubmit = (event) => {
 		event.preventDefault();
 		if (this.props.place === undefined) {
-			const newPlace = {
+			const newPerson = {
 				name: this.state.name,
 				location: this.state.location,
 				description: this.state.description,
-				pointsOfInterest: this.state.pointsOfInterest
+				notes: this.state.notes
 			};
 			// double check how to add new entry to firebase db
-			const placesRef = firebase.database().ref(`/${this.props.charName}/places/`);
-			placesRef.push(newPlace)
+			const personRef = firebase.database().ref(`/${this.props.charName}/people/`);
+			personRef.push(newPerson)
 				.then(this.closeModal);
 
 		}
@@ -45,7 +45,7 @@ export default class Input extends Component {
 			name: this.state.name,
 			location: this.state.location,
 			description: this.state.description,
-			pointsOfInterest: this.state.pointsOfInterest
+			notes: this.state.notes
 		};
 
 		this.closeModal = this.closeModal.bind(this);
@@ -57,10 +57,10 @@ export default class Input extends Component {
 		return (
 			<div class="modal-content">
 				<form onSubmit={this.handleSubmit}>
-					<input class={style['nb-form__input']} type="text" name="name" placeholder="What's it called?" onKeyUp={this.handleTextChange} />
-					<input class={style['nb-form__input']} type="text" name="location" placeholder="Where is it?" onKeyUp={this.handleTextChange} />
-					<input class={style['nb-form__input']} type="text" name="description" placeholder="What's it like?" onKeyUp={this.handleTextChange} />
-					<input class={style['nb-form__input']} type="text" name="pointsOfInterest" placeholder="What's there?" onKeyUp={this.handleTextChange} />
+					<input class={style['nb-form__input']} type="text" name="name" placeholder="What's their name?" onKeyUp={this.handleTextChange} />
+					<input class={style['nb-form__input']} type="text" name="location" placeholder="Where are they?" onKeyUp={this.handleTextChange} />
+					<input class={style['nb-form__input']} type="text" name="description" placeholder="What are they like?" onKeyUp={this.handleTextChange} />
+					<input class={style['nb-form__input']} type="text" name="notes" placeholder="What are they done, and why are they important?" onKeyUp={this.handleTextChange} />
 					<Cta buttonText="Submit" buttonType="submit" class="confirm" />
 					<Cta buttonText="Cancel" buttonType="button" clickHandler={this.closeModal} />
 				</form>

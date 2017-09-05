@@ -52,13 +52,18 @@ export default class Input extends Component {
 		itemRef.remove();
 	}
 
+	setSelectedPlace = (place) => {
+		this.setState({ selectedPlace: [place] });
+	}
+
 	constructor(props) {
 		super(props);
 		this.state = {
 			places: [],
 			text: '',
 			charName: this.props.charName,
-			modalChild: null
+			modalChild: null,
+			selectedPlace: []
 		};
 
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -67,19 +72,12 @@ export default class Input extends Component {
 	}
 
 	componentDidMount() {
-		const placesRef = firebase.database().ref(`${this.state.charName}/places/`);
-		placesRef.on('value', (snapshot) => {
+		const placesRef = firebase.database().ref(`${this.state.charName}/places/`).orderByChild('name');
+		placesRef.on('child_added', (snapshot) => {
 			let items = snapshot.val();
-			let newState = [];
-			for (let item in items) {
-				if (Object.prototype.hasOwnProperty.call(items, item)) {
-					newState.push({
-						id: item,
-						text: items[item].text,
-						sort: items[item].sort
-					});
-				}
-			}
+			const currentState = this.state.places;
+			let newState = currentState;
+			newState.push(items);
 			this.setState({
 				places: newState
 			});
@@ -99,22 +97,22 @@ export default class Input extends Component {
 				</Modal>
 				<ul>
 					 {this.state.places.map((entry) => (
-						<li data-index={entry.sort}>
-							{entry.text}
+						<li onClick={memobind(this, 'setSelectedPlace', entry)} class="clickable">
+							{entry.name}
 						</li>))}
 				</ul>
-				{/* <form autocomplete="off" class={style['nb-form']} onSubmit={this.handleSubmit}>
-					<input
-						class={style['nb-form__input']}
-						onKeyUp={this.handleTextChange}
-						placeholder="New note"
-						type="text"
-					/>
-					<button type="submit" class="hidden-submit" disabled={'' === this.state.text}>Submit</button>
-				</form> */}
-				{/* <button type="button" onClick={this.handleAddingPlace} class={style['new-place-button']}>
-					Add New Place
-				</button> */}
+				
+				{this.state.selectedPlace.map((sPlace) => (
+					<div class={'modal-content ' + style['place-details']}>
+						<h2>{sPlace.name}</h2>
+						<h4>Location:</h4>
+						<p>{sPlace.location}</p>
+						<h4>Description:</h4>
+						<p>{sPlace.description}</p>
+						<h4>Points of Interest:</h4>
+						<p>{sPlace.pointsOfInterest}</p>
+					</div>
+				))}
 				<Cta class={`confirm ${style['new-place']}`} buttonText="Add New Place" clickHandler={this.handleAddingPlace} />
 			</div>
 		);

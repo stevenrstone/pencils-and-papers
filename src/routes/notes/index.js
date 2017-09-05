@@ -30,6 +30,34 @@ export default class Notes extends Component {
 		}
 	}
 
+	customContext = (event) => {
+		if (window.getSelection().toString() !== '') {
+			event.preventDefault();
+			const mouseX = event.clientX;
+			const mouseY = event.clientY;
+
+			const menu = document.createElement('ul');
+			menu.className = style['custom-context'];
+			menu.style.position = 'absolute';
+			menu.style.left = `${mouseX}px`;
+			menu.style.top = `${mouseY}px`;
+
+			const newPlace = document.createElement('li');
+			newPlace.innerHTML = 'new place';
+
+			const newPerson = document.createElement('li');
+			newPerson.innerHTML = 'new person';
+
+			const newThing = document.createElement('li');
+			newThing.innerHTML = 'new thing';
+
+			menu.appendChild(newPlace);
+			menu.appendChild(newPerson);
+			menu.appendChild(newThing);
+			document.body.appendChild(menu);
+		}
+	}
+
 	handleTextChange = (event) => {
 		this.setState({ text: event.target.value });
 	};
@@ -52,6 +80,7 @@ export default class Notes extends Component {
 			modalChild: null
 		};
 
+		this.customContext = this.customContext.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleTextChange = this.handleTextChange.bind(this);
 		this.removeItem = this.removeItem.bind(this);
@@ -84,16 +113,16 @@ export default class Notes extends Component {
 
 	render() {
 		return (
-			<div>
+			<div class="notes">
 				<Modal>
 					{this.state.modalChild}
 				</Modal>
 				<ul>
 					 {this.state.entries.map((entry) => (
-						<li data-index={entry.sort}>
+						<li data-index={entry.sort} onContextMenu={this.customContext} >
 							{entry.text}
-							<span style="color: red;" class="delete-item" onClick={memobind(this, 'removeItem', entry.id)}>x</span>
-							<span style="color: green;" class="edit-item" onClick={memobind(this, 'editItem', entry)}>e</span>
+							<span class="delete-item" onClick={memobind(this, 'removeItem', entry.id)}>Delete</span>
+							<span class="edit-item" onClick={memobind(this, 'editItem', entry)}>Edit</span>
 						</li>))}
 				</ul>
 				<form autocomplete="off" class={style['nb-form']} onSubmit={this.handleSubmit}>

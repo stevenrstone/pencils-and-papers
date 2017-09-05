@@ -26,7 +26,7 @@ export default class Input extends Component {
 
 			this.setState({ entries: newStateArray });
 			this.setState({ text: '' });
-			// console.log(event.target);
+			
 			event.target.querySelector('[class^="nb-form__input"]').value = '';
 		}
 	}

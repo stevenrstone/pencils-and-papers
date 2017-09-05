@@ -4,53 +4,66 @@ import firebase from '../../components/firebase';
 import memobind from 'memobind';
 
 import Modal from '../../components/modal/index';
-import ModifyEntry from '../../components/modifyEntry/index';
+import Cta from '../../components/cta';
+import ModifyThing from '../../components/modifyThing';
 
 export default class Input extends Component {
 	handleSubmit = (event) => {
 		event.preventDefault();
 		if (this.state.text !== '') {
-			let newStateArray = this.state.entries.slice();
+			let newStateArray = this.state.things.slice();
 			newStateArray.push({
 				id: '',
-				text: this.state.text,
-				sort: this.state.entries.length
+				name: this.state.name,
+				stats: this.state.stats,
+				description: this.state.description,
+				notes: this.state.notes
 			});
 
-			const itemsRef = firebase.database().ref(`${this.state.charName}/notes/`);
+			const thingsRef = firebase.database().ref(`${this.state.charName}/things/`);
 			const item = {
-				text: this.state.text,
-				sort: this.state.entries.length
+				name: this.state.name,
+				stats: this.state.stats,
+				description: this.state.description,
+				notes: this.state.notes
 			};
-			itemsRef.push(item);
+			thingsRef.push(item);
 
-			this.setState({ entries: newStateArray });
+			this.setState({ things: newStateArray });
 			this.setState({ text: '' });
-			// console.log(event.target);
 			event.target.querySelector('[class^="nb-form__input"]').value = '';
 		}
+	}
+
+	handleAddingThing = () => {
+		this.setState({ modalChild: <ModifyThing thing={undefined} charName={this.state.charName} /> });
 	}
 
 	handleTextChange = (event) => {
 		this.setState({ text: event.target.value });
 	};
 
-	editItem = (item) => {
-		this.setState({ modalChild: <ModifyEntry entry={item} charName={this.state.charName} /> });
+	editThing = (place) => {
+		this.setState({ modalChild: <ModifyThing thing={place} charName={this.state.charName} /> });
 	}
 
 	removeItem = (itemId) => {
-		const itemRef = firebase.database().ref(`/${this.state.charName}/notes/${itemId}`);
+		const itemRef = firebase.database().ref(`/${this.state.charName}/things/${itemId}`);
 		itemRef.remove();
+	}
+
+	setSelectedThing = (place) => {
+		this.setState({ selectedThing: [place] });
 	}
 
 	constructor(props) {
 		super(props);
 		this.state = {
-			entries: [],
+			things: [],
 			text: '',
 			charName: this.props.charName,
-			modalChild: null
+			modalChild: null,
+			selectedThing: []
 		};
 
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -59,21 +72,14 @@ export default class Input extends Component {
 	}
 
 	componentDidMount() {
-		const itemsRef = firebase.database().ref(`${this.state.charName}/notes/`);
-		itemsRef.on('value', (snapshot) => {
+		const thingsRef = firebase.database().ref(`${this.state.charName}/things/`).orderByChild('name');
+		thingsRef.on('child_added', (snapshot) => {
 			let items = snapshot.val();
-			let newState = [];
-			for (let item in items) {
-				if (Object.prototype.hasOwnProperty.call(items, item)) {
-					newState.push({
-						id: item,
-						text: items[item].text,
-						sort: items[item].sort
-					});
-				}
-			}
+			const currentState = this.state.things;
+			let newState = currentState;
+			newState.push(items);
 			this.setState({
-				entries: newState
+				things: newState
 			});
 		});
 	}
@@ -83,30 +89,31 @@ export default class Input extends Component {
 		
 	}
 
-	// Note: `user` comes from the URL, courtesy of our router
 	render() {
 		return (
-			<div>
+			<div class="things">
 				<Modal>
 					{this.state.modalChild}
 				</Modal>
 				<ul>
-					 {this.state.entries.map((entry) => (
-						<li data-index={entry.sort}>
-							{entry.text}
-							<span style="color: red;" class="delete-item" onClick={memobind(this, 'removeItem', entry.id)}>x</span>
-							<span style="color: green;" class="edit-item" onClick={memobind(this, 'editItem', entry)}>e</span>
+					 {this.state.things.map((entry) => (
+						<li onClick={memobind(this, 'setSelectedThing', entry)}>
+							{entry.name}
 						</li>))}
 				</ul>
-				<form autocomplete="off" class={style['nb-form']} onSubmit={this.handleSubmit}>
-					<input
-						class={style['nb-form__input']}
-						onKeyUp={this.handleTextChange}
-						placeholder="New note"
-						type="text"
-					/>
-					<button type="submit" class="hidden-submit" disabled={'' === this.state.text}>Submit</button>
-				</form>
+				
+				{this.state.selectedThing.map((sThing) => (
+					<div class={'modal-content ' + style['place-details']}>
+						<h2>{sThing.name}</h2>
+						<h4>Location:</h4>
+						<p>{sThing.stats}</p>
+						<h4>Description:</h4>
+						<p>{sThing.description}</p>
+						<h4>Notes</h4>
+						<p>{sThing.notes}</p>
+					</div>
+				))}
+				<Cta class={`confirm ${style['new-place']}`} buttonText="Add New Thing" clickHandler={this.handleAddingThing} />
 			</div>
 		);
 	}
