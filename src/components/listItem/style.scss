@@ -1,13 +1,19 @@
-.button {
-  background-color: #e1e1e1;
-  border: 2px solid #363636;
-  color: #363636;
-  float: right;
-  font-size: 18px;
-  font-weight: bold;
-  margin-left: 2em;
+.list-item {
+  list-style-type: none;
   padding: 1em;
-  &.confirm {
-    background-color: lightskyblue;
+
+  &:nth-child(odd) {
+    background-color: rgba(135, 206, 250, .07);
+  }
+
+  &.clickable {
+    cursor: pointer;
+  }
+
+  &:hover {
+    .delete-item,
+    .edit-item {
+      display: inline-block;
+    }
   }
 }

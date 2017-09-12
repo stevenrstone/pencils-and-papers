@@ -12,47 +12,7 @@ body {
   ul {
     padding: 0;
   }
-  li {
-    list-style-type: none;
-    padding: 1em;
-
-    &:nth-child(odd) {
-      background-color: rgba(135, 206, 250, .07);
-    }
-
-    &.clickable {
-      cursor: pointer;
-    }
-
-    .delete-item {
-      border: 1px solid red;
-      border-radius: 4px;
-      color: red;
-      cursor: pointer;
-      display: none;
-      line-height: 0;
-      margin: 0 1em;
-      padding: .5em .2em;
-    }
-
-    .edit-item {
-      border: 1px solid green;
-      border-radius: 4px;
-      color: green;
-      cursor: pointer;
-      display: none;
-      line-height: 0;
-      margin: 0;
-      padding: .5em .2em;
-    }
-
-    &:hover {
-      .delete-item,
-      .edit-item {
-        display: inline-block;
-      }
-    }
-  }
+  
 }
 
 .modal-content {

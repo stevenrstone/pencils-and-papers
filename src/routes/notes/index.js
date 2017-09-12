@@ -3,6 +3,9 @@ import style from './style';
 import firebase from '../../components/firebase';
 import memobind from 'memobind';
 
+import Item from '../../components/listItem/';
+import List from '../../components/list';
+import InlineCta from '../../components/inlineCta';
 import Modal from '../../components/modal/index';
 import ModifyEntry from '../../components/modifyEntry/index';
 
@@ -117,14 +120,15 @@ export default class Notes extends Component {
 				<Modal>
 					{this.state.modalChild}
 				</Modal>
-				<ul>
-					 {this.state.entries.map((entry) => (
-						<li data-index={entry.sort} onContextMenu={this.customContext} >
+				<List>
+					{this.state.entries.map((entry) => (
+						<Item data-index={entry.sort} onContextMenu={this.customContext} >
 							{entry.text}
-							<span class="delete-item" onClick={memobind(this, 'removeItem', entry.id)}>Delete</span>
-							<span class="edit-item" onClick={memobind(this, 'editItem', entry)}>Edit</span>
-						</li>))}
-				</ul>
+							<InlineCta class="delete-item" onClick={memobind(this, 'removeItem', entry.id)}>Delete</InlineCta>
+							<InlineCta class="edit-item" onClick={memobind(this, 'editItem', entry)}>Edit</InlineCta>
+						</Item>
+					))}
+				</List>
 				<form autocomplete="off" class={style['nb-form']} onSubmit={this.handleSubmit}>
 					<input
 						class={style['nb-form__input']}

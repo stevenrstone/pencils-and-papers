@@ -1,9 +1,11 @@
 import { h, Component } from 'preact';
 import style from './style.scss';
 
-export default class Cta extends Component {
+// const listItem = (props) => {
+export default class ListItem extends Component {
 	constructor(props) {
-		super(props);
+		super();
+		this.state = {};
 
 		this.renderClasses = this.renderClasses.bind(this);
 	}
@@ -27,14 +29,15 @@ export default class Cta extends Component {
 
 	render() {
 		return (
-			<button type={this.props.buttonType !== null ? this.props.buttonType : 'button'}
-				onClick={this.props.clickHandler}
-				class={style.button + ' ' + this.renderClasses()}
+			<li class={style['list-item'] + ' ' + this.renderClasses()}
+				data-index={this.props['data-index']}
+				onContextMenu={this.props.onContextMenu}
+				onClick={this.props.onClick}
 			>
-				{this.props.buttonText}
-			</button>
+				{this.props.children}
+			</li>
 		);
-	};
-};
+	}
+}
 
-// export default Cta;
+// export default listItem;

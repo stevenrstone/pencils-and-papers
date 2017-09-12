@@ -3,7 +3,10 @@ import style from './style';
 import firebase from '../../components/firebase';
 import memobind from 'memobind';
 
-import Modal from '../../components/modal/index';
+
+import List from '../../components/list';
+import Item from '../../components/listItem';
+import Modal from '../../components/modal';
 import Cta from '../../components/cta';
 import ModifyPlace from '../../components/modifyPlace';
 
@@ -95,12 +98,12 @@ export default class Input extends Component {
 				<Modal>
 					{this.state.modalChild}
 				</Modal>
-				<ul>
+				<List>
 					 {this.state.places.map((entry) => (
-						<li onClick={memobind(this, 'setSelectedPlace', entry)} class="clickable">
+						<Item onClick={memobind(this, 'setSelectedPlace', entry)} class="clickable">
 							{entry.name}
-						</li>))}
-				</ul>
+						</Item>))}
+				</List>
 				
 				{this.state.selectedPlace.map((sPlace) => (
 					<div class={'modal-content ' + style['place-details']}>
