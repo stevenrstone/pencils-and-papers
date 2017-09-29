@@ -70,27 +70,13 @@ export default class Thing extends Component {
 		this.setState({ selectedThing: [place] });
 	};
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			things: [],
-			text: '',
-			charName: this.props.charName,
-			modalChild: null,
-			selectedThing: [],
-			type: this.props.type !== undefined ? this.props.type : 'things'
-		};
+	updateType = type => {
+		this.setState({
+			type
+		});
+	};
 
-		console.log(this.state);
-
-		this.handleTextChange = this.handleTextChange.bind(this);
-		this.removeItem = this.removeItem.bind(this);
-		this.removeModalChild = this.removeModalChild.bind(this);
-		this.renderItems = this.renderItems.bind(this);
-	}
-
-	componentDidMount() {
-		console.log('component did mount');
+	getData = () => {
 		const thingsRef = firebase
 			.database()
 			.ref(`${this.state.charName}/${this.state.type}/`)
@@ -114,10 +100,45 @@ export default class Thing extends Component {
 				things: newState
 			});
 		});
+	};
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			things: [],
+			text: '',
+			charName: this.props.charName,
+			modalChild: null,
+			selectedThing: [],
+			type: this.props.type
+		};
+
+		console.log(this.state);
+
+		this.getData = this.getData.bind(this);
+		this.handleTextChange = this.handleTextChange.bind(this);
+		this.removeItem = this.removeItem.bind(this);
+		this.removeModalChild = this.removeModalChild.bind(this);
+		this.renderItems = this.renderItems.bind(this);
+		this.updateType = this.updateType.bind(this);
 	}
 
-	componentDidUpdate() {
-		console.log('component updating');
+	componentDidMount() {
+		console.log('component did mount');
+		this.getData();
+	}
+
+	componentWillReceiveProps(nextProps, nextState) {
+		console.log('should component update');
+		if (nextProps === this.props) {
+			return false;
+		}
+
+		this.updateType(nextProps.type);
+		this.removeSelectedThing();
+		this.getData();
+
+		return true;
 	}
 
 	renderItems = () => {
@@ -173,7 +194,8 @@ export default class Thing extends Component {
 				))}
 				<Cta
 					class={`confirm ${style['new-place']}`}
-					buttonText="Add New Thing"
+					buttonText={`Add New ${this.state.type.charAt(0).toUpperCase() +
+						this.state.type.slice(1)}`}
 					clickHandler={this.handleAddingThing}
 				/>
 			</div>
