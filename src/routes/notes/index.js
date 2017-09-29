@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import style from './style';
 import firebase from '../../components/firebase';
 import memobind from 'memobind';
+// import removeModalChild from '../../lib/removeModalChild';
 
 import Item from '../../components/listItem/';
 import List from '../../components/list';
@@ -66,13 +67,19 @@ export default class Notes extends Component {
 	};
 
 	editItem = (item) => {
-		this.setState({ modalChild: <ModifyEntry entry={item} charName={this.state.charName} /> });
+		this.setState({ modalChild: <ModifyEntry entry={item} charName={this.state.charName} closeModal={this.removeModalChild} /> });
 	}
 
 	removeItem = (itemId) => {
 		const itemRef = firebase.database().ref(`/${this.state.charName}/notes/${itemId}`);
 		itemRef.remove();
 	}
+
+	removeModalChild = () => {
+		this.setState({
+			modalChild: null
+		});
+	};
 
 	constructor(props) {
 		super(props);
@@ -87,11 +94,13 @@ export default class Notes extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleTextChange = this.handleTextChange.bind(this);
 		this.removeItem = this.removeItem.bind(this);
+		this.removeModalChild = this.removeModalChild.bind(this);
 	}
 
 	componentDidMount() {
 		const itemsRef = firebase.database().ref(`${this.state.charName}/notes/`);
 		itemsRef.on('value', (snapshot) => {
+			console.log('updating items');
 			let items = snapshot.val();
 			let newState = [];
 			for (let item in items) {

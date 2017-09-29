@@ -7,7 +7,7 @@ import Cta from '../cta';
 export default class Input extends Component {
 
 	closeModal = () => {
-		document.querySelector('div[class^="overlay"]').removeChild(document.querySelector('div[class^="overlay"] .modal-content'));
+		this.props.closeModal();
 	}
 
 	handleSubmit = (event) => {

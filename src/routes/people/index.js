@@ -38,8 +38,14 @@ export default class Input extends Component {
 	}
 
 	handleAddingPerson = () => {
-		this.setState({ modalChild: <ModifyPerson person={undefined} charName={this.state.charName} /> });
+		this.setState({ modalChild: <ModifyPerson person={undefined} charName={this.state.charName} closeModal={this.removeModalChild} /> });
 	}
+
+	removeModalChild = () => {
+		this.setState({
+			modalChild: null
+		});
+	};
 
 	handleTextChange = (event) => {
 		this.setState({ text: event.target.value });
@@ -71,6 +77,7 @@ export default class Input extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleTextChange = this.handleTextChange.bind(this);
 		this.removeItem = this.removeItem.bind(this);
+		this.removeModalChild = this.removeModalChild.bind(this);
 	}
 
 	componentDidMount() {

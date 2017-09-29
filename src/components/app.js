@@ -9,7 +9,6 @@ import People from '../routes/people';
 import Things from '../routes/things';
 import Config from '../routes/config';
 
-
 import Modal from './modal';
 import Login from './login';
 
@@ -23,14 +22,14 @@ export default class App extends Component {
 		this.currentUrl = e.url;
 	};
 
-	setCharName = (name) => {
+	setCharName = name => {
 		this.setState({
 			charName: name
 		});
 
 		document.cookie = `nbCharName=${this.state.charName}`;
 		route('/notes/');
-	}
+	};
 
 	constructor(props) {
 		super(props);
@@ -42,7 +41,10 @@ export default class App extends Component {
 	}
 
 	componentDidMount() {
-		const cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)nbCharName\s*=\s*([^;]*).*$)|^.*$/,'$1');
+		const cookieValue = document.cookie.replace(
+			/(?:(?:^|.*;\s*)nbCharName\s*=\s*([^;]*).*$)|^.*$/,
+			'$1'
+		);
 		if (cookieValue !== '') {
 			this.setCharName(cookieValue, window.location.pathname);
 		}
@@ -57,19 +59,19 @@ export default class App extends Component {
 			<Router onChange={this.handleRoute}>
 				<Home path="/" setCharName={this.setCharName} />
 				<Notes path="/notes" charName={this.state.charName} />
-				<Places path="/places" charName={this.state.charName} />
-				<People path="/people" charName={this.state.charName} />
-				<Things path="/things" charName={this.state.charName} />
+				<Things path="/places" type="places" charName={this.state.charName} />
+				<Things path="/people" type="people" charName={this.state.charName} />
+				<Things path="/things" type="things" charName={this.state.charName} />
 				<Config path="/config" charName={this.state.charName} />
 			</Router>
 		</div>
-	)
+	);
 
 	renderLogin = () => (
 		<Modal>
 			<Login setCharName={this.setCharName} />
 		</Modal>
-	)
+	);
 
 	render() {
 		if (this.state.charName === '') {

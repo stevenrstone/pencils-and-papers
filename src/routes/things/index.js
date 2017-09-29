@@ -9,54 +9,66 @@ import Modal from '../../components/modal/index';
 import Cta from '../../components/cta';
 import ModifyThing from '../../components/modifyThing';
 
-export default class Input extends Component {
-	handleSubmit = (event) => {
-		event.preventDefault();
-		if (this.state.text !== '') {
-			let newStateArray = this.state.things.slice();
-			newStateArray.push({
-				id: '',
-				name: this.state.name,
-				stats: this.state.stats,
-				description: this.state.description,
-				notes: this.state.notes
-			});
-
-			const thingsRef = firebase.database().ref(`${this.state.charName}/things/`);
-			const item = {
-				name: this.state.name,
-				stats: this.state.stats,
-				description: this.state.description,
-				notes: this.state.notes
-			};
-			thingsRef.push(item);
-
-			this.setState({ things: newStateArray });
-			this.setState({ text: '' });
-			event.target.querySelector('[class^="nb-form__input"]').value = '';
-		}
-	}
-
+export default class Thing extends Component {
 	handleAddingThing = () => {
-		this.setState({ modalChild: <ModifyThing thing={undefined} charName={this.state.charName} /> });
-	}
+		this.setState({
+			modalChild: (
+				<ModifyThing
+					thing={undefined}
+					charName={this.state.charName}
+					closeModal={this.removeModalChild}
+				/>
+			)
+		});
+	};
 
-	handleTextChange = (event) => {
+	handleTextChange = event => {
 		this.setState({ text: event.target.value });
 	};
 
-	editThing = (place) => {
-		this.setState({ modalChild: <ModifyThing thing={place} charName={this.state.charName} /> });
-	}
+	editThing = place => {
+		this.setState({
+			modalChild: (
+				<ModifyThing
+					thing={place}
+					charName={this.state.charName}
+					closeModal={this.removeModalChild}
+					callback={this.refreshSelectedThing}
+				/>
+			)
+		});
+	};
 
-	removeItem = (itemId) => {
-		const itemRef = firebase.database().ref(`/${this.state.charName}/things/${itemId}`);
+	removeItem = itemId => {
+		const itemRef = firebase
+			.database()
+			.ref(`/${this.state.charName}/${this.state.type}/${itemId}`);
 		itemRef.remove();
-	}
+	};
 
-	setSelectedThing = (place) => {
+	removeModalChild = () => {
+		this.setState({
+			modalChild: null
+		});
+	};
+
+	refreshSelectedThing = () => {
+		if (this.state.selectedThing.length > 0) {
+			const selectedId = this.state.selectedThing[0].id;
+			const foundObj = this.state.things.find(el => el.id === selectedId);
+			this.setSelectedThing(foundObj);
+		}
+	};
+
+	removeSelectedThing = () => {
+		this.setState({
+			selectedThing: []
+		});
+	};
+
+	setSelectedThing = place => {
 		this.setState({ selectedThing: [place] });
-	}
+	};
 
 	constructor(props) {
 		super(props);
@@ -65,57 +77,105 @@ export default class Input extends Component {
 			text: '',
 			charName: this.props.charName,
 			modalChild: null,
-			selectedThing: []
+			selectedThing: [],
+			type: this.props.type !== undefined ? this.props.type : 'things'
 		};
 
-		this.handleSubmit = this.handleSubmit.bind(this);
+		console.log(this.state);
+
 		this.handleTextChange = this.handleTextChange.bind(this);
 		this.removeItem = this.removeItem.bind(this);
+		this.removeModalChild = this.removeModalChild.bind(this);
+		this.renderItems = this.renderItems.bind(this);
 	}
 
 	componentDidMount() {
-		const thingsRef = firebase.database().ref(`${this.state.charName}/things/`).orderByChild('name');
-		thingsRef.on('child_added', (snapshot) => {
+		console.log('component did mount');
+		const thingsRef = firebase
+			.database()
+			.ref(`${this.state.charName}/${this.state.type}/`)
+			.orderByChild('name');
+		thingsRef.on('value', snapshot => {
 			let items = snapshot.val();
-			const currentState = this.state.things;
-			let newState = currentState;
-			newState.push(items);
+			let newState = [];
+			for (let item in items) {
+				if (Object.prototype.hasOwnProperty.call(items, item)) {
+					newState.push({
+						id: item,
+						description: items[item].description,
+						name: items[item].name,
+						notes: items[item].notes,
+						stats: items[item].stats
+					});
+				}
+			}
+			newState.sort((a, b) => a.name > b.name);
 			this.setState({
 				things: newState
 			});
 		});
 	}
 
-	// gets called just before navigating away from the route
-	componentWillUnmount() {
-		
+	componentDidUpdate() {
+		console.log('component updating');
 	}
+
+	renderItems = () => {
+		if (this.state.things[0] === undefined) {
+			return;
+		}
+
+		const thingObj = this.state.things[0];
+		const keys = Object.keys(thingObj);
+
+		return keys.map(key => (
+			<Item
+				onClick={memobind(this, 'setSelectedThing', thingObj[key])}
+				class="clickable"
+			>
+				{thingObj[key].name}
+			</Item>
+		));
+	};
 
 	render() {
 		return (
 			<div class="things">
-				<Modal>
-					{this.state.modalChild}
-				</Modal>
+				<Modal>{this.state.modalChild}</Modal>
 				<List>
-					 {this.state.things.map((entry) => (
-						<Item onClick={memobind(this, 'setSelectedThing', entry)} class="clickable">
-							{entry.name}
-						</Item>))}
+					{this.state.things.map((thing, index) => (
+						<Item
+							onClick={memobind(this, 'setSelectedThing', thing)}
+							class="clickable"
+						>
+							{thing.name}
+						</Item>
+					))}
+
+					{/* {this.renderItems()} */}
 				</List>
-				
-				{this.state.selectedThing.map((sThing) => (
+
+				{this.state.selectedThing.map(sThing => (
 					<div class={'modal-content ' + style['place-details']}>
 						<h2>{sThing.name}</h2>
-						<h4>Location:</h4>
+						<h4>Stats:</h4>
 						<p>{sThing.stats}</p>
 						<h4>Description:</h4>
 						<p>{sThing.description}</p>
-						<h4>Notes</h4>
+						<h4>Notes:</h4>
 						<p>{sThing.notes}</p>
+						<Cta
+							class={style.edit}
+							buttonText={`Edit ${sThing.name}`}
+							clickHandler={memobind(this, 'editThing', sThing)}
+						/>
 					</div>
 				))}
-				<Cta class={`confirm ${style['new-place']}`} buttonText="Add New Thing" clickHandler={this.handleAddingThing} />
+				<Cta
+					class={`confirm ${style['new-place']}`}
+					buttonText="Add New Thing"
+					clickHandler={this.handleAddingThing}
+				/>
 			</div>
 		);
 	}

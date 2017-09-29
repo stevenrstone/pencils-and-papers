@@ -39,7 +39,7 @@ export default class Input extends Component {
 	}
 
 	handleAddingPlace = () => {
-		this.setState({ modalChild: <ModifyPlace place={undefined} charName={this.state.charName} /> });
+		this.setState({ modalChild: <ModifyPlace place={undefined} charName={this.state.charName} closeModal={this.removeModalChild} /> });
 	}
 
 	handleTextChange = (event) => {
@@ -59,6 +59,12 @@ export default class Input extends Component {
 		this.setState({ selectedPlace: [place] });
 	}
 
+	removeModalChild = () => {
+		this.setState({
+			modalChild: null
+		});
+	};
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -72,6 +78,7 @@ export default class Input extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleTextChange = this.handleTextChange.bind(this);
 		this.removeItem = this.removeItem.bind(this);
+		this.removeModalChild = this.removeModalChild.bind(this);
 	}
 
 	componentDidMount() {
