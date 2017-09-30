@@ -22,13 +22,14 @@ export default class App extends Component {
 		this.currentUrl = e.url;
 	};
 
-	setCharName = name => {
+	setCharName = (name, path) => {
 		this.setState({
-			charName: name
+			charName: name,
+			rendered: false,
 		});
 
 		document.cookie = `nbCharName=${this.state.charName}`;
-		route('/notes/');
+		route(path);
 	};
 
 	constructor(props) {
@@ -45,6 +46,7 @@ export default class App extends Component {
 			/(?:(?:^|.*;\s*)nbCharName\s*=\s*([^;]*).*$)|^.*$/,
 			'$1'
 		);
+		console.log('component updated', cookieValue);
 		if (cookieValue !== '') {
 			this.setCharName(cookieValue, window.location.pathname);
 		}
@@ -77,6 +79,11 @@ export default class App extends Component {
 		if (this.state.charName === '') {
 			return this.renderLogin();
 		}
-		return this.renderApp();
+		if (!this.state.rendered) {
+			this.setState({
+				rendered: true
+			});
+			return this.renderApp();
+		}
 	}
 }

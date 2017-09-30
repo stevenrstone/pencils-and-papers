@@ -11,8 +11,11 @@ export default class Input extends Component {
 
 	handleSubmit = event => {
 		event.preventDefault();
-		const thingRef = firebase.database().ref(`/${this.props.charName}/things/`);
+		const thingRef = firebase
+			.database()
+			.ref(`/${this.props.charName}/${this.props.type}/`);
 		if (this.props.thing === undefined) {
+			// console.log('boot');
 			const newPerson = {
 				name: this.state.name,
 				stats: this.state.stats,
@@ -23,7 +26,6 @@ export default class Input extends Component {
 			thingRef.push(newPerson).then(this.closeModal);
 		}
 		else {
-			// console.log(thingRef.orderByChild('name').equalTo(this.props.thing.name));
 			thingRef
 				.orderByChild('name')
 				.equalTo(this.props.thing.name)
@@ -32,10 +34,9 @@ export default class Input extends Component {
 						return;
 					}
 					const key = Object.keys(snapshot.val())[0];
-					console.log(key);
 					const keyRef = firebase
 						.database()
-						.ref(`/${this.props.charName}/things/${key}`);
+						.ref(`/${this.props.charName}/${this.props.type}/${key}`);
 					keyRef
 						.set({
 							name: this.state.name,

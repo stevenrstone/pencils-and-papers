@@ -17,6 +17,7 @@ export default class Thing extends Component {
 					thing={undefined}
 					charName={this.state.charName}
 					closeModal={this.removeModalChild}
+					type={this.state.type}
 				/>
 			)
 		});
@@ -34,6 +35,7 @@ export default class Thing extends Component {
 					charName={this.state.charName}
 					closeModal={this.removeModalChild}
 					callback={this.refreshSelectedThing}
+					type={this.state.type}
 				/>
 			)
 		});
@@ -129,7 +131,6 @@ export default class Thing extends Component {
 	}
 
 	componentWillReceiveProps(nextProps, nextState) {
-		console.log('should component update');
 		if (nextProps === this.props) {
 			return false;
 		}
