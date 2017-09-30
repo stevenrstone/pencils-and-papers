@@ -15,7 +15,6 @@ export default class Input extends Component {
 			.database()
 			.ref(`/${this.props.charName}/${this.props.type}/`);
 		if (this.props.thing === undefined) {
-			// console.log('boot');
 			const newPerson = {
 				name: this.state.name,
 				stats: this.state.stats,

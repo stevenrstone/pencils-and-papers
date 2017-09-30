@@ -23,9 +23,10 @@ export default class App extends Component {
 	};
 
 	setCharName = (name, path) => {
+		console.log(path);
 		this.setState({
 			charName: name,
-			rendered: false,
+			// rendered: false,
 		});
 
 		document.cookie = `nbCharName=${this.state.charName}`;
@@ -55,19 +56,21 @@ export default class App extends Component {
 		}
 	}
 
-	renderApp = () => (
-		<div id="app">
-			<Nav charName={this.state.charName} />
-			<Router onChange={this.handleRoute}>
-				<Home path="/" setCharName={this.setCharName} />
-				<Notes path="/notes" charName={this.state.charName} />
-				<Things path="/places" type="places" charName={this.state.charName} />
-				<Things path="/people" type="people" charName={this.state.charName} />
-				<Things path="/things" type="things" charName={this.state.charName} />
-				<Config path="/config" charName={this.state.charName} />
-			</Router>
-		</div>
-	);
+	renderApp = () => {
+		{if (document.getElementById('app') === null) {
+			return <div id="app">
+				<Nav charName={this.state.charName} />
+				<Router onChange={this.handleRoute}>
+					<Home path="/" setCharName={this.setCharName} />
+					<Notes path="/notes" charName={this.state.charName} />
+					<Things path="/places" type="places" charName={this.state.charName} />
+					<Things path="/people" type="people" charName={this.state.charName} />
+					<Things path="/things" type="things" charName={this.state.charName} />
+					<Config path="/config" charName={this.state.charName} />
+				</Router>
+			</div>
+		}}
+	};
 
 	renderLogin = () => (
 		<Modal>
@@ -79,11 +82,6 @@ export default class App extends Component {
 		if (this.state.charName === '') {
 			return this.renderLogin();
 		}
-		if (!this.state.rendered) {
-			this.setState({
-				rendered: true
-			});
-			return this.renderApp();
-		}
+		return this.renderApp();
 	}
 }

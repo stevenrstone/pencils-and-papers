@@ -10,7 +10,11 @@ export default class Login extends Component  {
 
 	handleSubmit = (event) => {
 		event.preventDefault();
-		this.props.setCharName(this.state.charName);
+		let url = location.pathname;
+		if (location.pathname === '/') {
+			url = /notes/;
+		}
+		this.props.setCharName(this.state.charName, url);
 	}
 
 	constructor(props) {
