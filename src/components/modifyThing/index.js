@@ -15,14 +15,16 @@ export default class Input extends Component {
 			.database()
 			.ref(`/${this.props.charName}/${this.props.type}/`);
 		if (this.props.thing === undefined) {
-			const newPerson = {
-				name: this.state.name,
-				stats: this.state.stats,
-				description: this.state.description,
-				notes: this.state.notes
-			};
+			if (this.state.name !== undefined) {
+				const newPerson = {
+					name: this.state.name,
+					stats: this.state.stats,
+					description: this.state.description,
+					notes: this.state.notes
+				};
 
-			thingRef.push(newPerson).then(this.closeModal);
+				thingRef.push(newPerson).then(this.closeModal);
+			}
 		}
 		else {
 			thingRef
@@ -36,19 +38,27 @@ export default class Input extends Component {
 					const keyRef = firebase
 						.database()
 						.ref(`/${this.props.charName}/${this.props.type}/${key}`);
-					keyRef
-						.set({
-							name: this.state.name,
-							stats: this.state.stats,
-							description: this.state.description,
-							notes: this.state.notes
-						})
-						.then(this.closeModal);
-
-					this.closeModal();
+					if (this.state.name.length > 0) {
+						keyRef
+							.set({
+								name: this.state.name,
+								stats: this.state.stats,
+								description: this.state.description,
+								notes: this.state.notes
+							})
+							.then(this.closeModal);
+					}
+					else {
+						this.props.removeSelectedThing();
+						keyRef.remove();
+						this.closeModal();
+						return;
+					}
 				});
 		}
-		this.props.callback();
+		if (typeof this.props.callback === 'function') {
+			this.props.callback();
+		}
 	};
 
 	handleTextChange = event => {

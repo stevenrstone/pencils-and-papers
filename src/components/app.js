@@ -4,8 +4,6 @@ import { Router, route } from 'preact-router';
 import Nav from './nav';
 import Home from '../routes/home';
 import Notes from '../routes/notes';
-import Places from '../routes/places';
-import People from '../routes/people';
 import Things from '../routes/things';
 import Config from '../routes/config';
 
@@ -26,7 +24,6 @@ export default class App extends Component {
 		console.log(path);
 		this.setState({
 			charName: name,
-			// rendered: false,
 		});
 
 		document.cookie = `nbCharName=${this.state.charName}`;
@@ -36,7 +33,8 @@ export default class App extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			charName: ''
+			charName: '',
+			rendered: false
 		};
 
 		this.setCharName = this.setCharName.bind(this);
@@ -57,7 +55,7 @@ export default class App extends Component {
 	}
 
 	renderApp = () => {
-		{if (document.getElementById('app') === null) {
+		// if (document.getElementById('app') === null) {
 			return <div id="app">
 				<Nav charName={this.state.charName} />
 				<Router onChange={this.handleRoute}>
@@ -69,7 +67,7 @@ export default class App extends Component {
 					<Config path="/config" charName={this.state.charName} />
 				</Router>
 			</div>
-		}}
+		// }
 	};
 
 	renderLogin = () => (

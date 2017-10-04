@@ -35,6 +35,7 @@ export default class Thing extends Component {
 					charName={this.state.charName}
 					closeModal={this.removeModalChild}
 					callback={this.refreshSelectedThing}
+					removeSelectedThing={this.removeSelectedThing}
 					type={this.state.type}
 				/>
 			)
@@ -190,6 +191,11 @@ export default class Thing extends Component {
 							class={style.edit}
 							buttonText={`Edit ${sThing.name}`}
 							clickHandler={memobind(this, 'editThing', sThing)}
+						/>
+						<Cta
+							class={style.edit}
+							buttonText='Close'
+							clickHandler={this.removeSelectedThing}
 						/>
 					</div>
 				))}

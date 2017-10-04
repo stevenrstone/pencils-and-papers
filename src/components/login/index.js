@@ -12,7 +12,7 @@ export default class Login extends Component  {
 		event.preventDefault();
 		let url = location.pathname;
 		if (location.pathname === '/') {
-			url = /notes/;
+			url = '/notes/';
 		}
 		this.props.setCharName(this.state.charName, url);
 	}

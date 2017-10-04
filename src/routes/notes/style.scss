@@ -8,11 +8,32 @@
 .nb-form__input {
   border: 0;
   border-top: 1px solid darkgray;
-  box-shadow: 0 -10px 5px rgba(135, 206, 250, .2);
+  box-shadow: 0 -10px 5px rgba(135, 206, 250, 0.2);
   padding: 1.5em;
   width: 100%;
 }
 
 .nb-form__submit {
   visibility: hidden;
+}
+
+.heading {
+  font-size: 1.5em;
+  font-weight: bold;
+  position: relative;
+
+  &::after {
+    background: linear-gradient(
+      to right,
+      rgba(54, 54, 54, 1),
+      rgba(54, 54, 54, 0)
+    );
+    bottom: -.4em;
+    content: "";
+    height: 1px;
+    left: 0;
+    position: absolute;
+    right: 0;
+    width: 70vw;
+  }
 }
